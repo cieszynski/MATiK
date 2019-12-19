@@ -6,7 +6,7 @@
         android:contentDescription="cd_home"
         android:title="Startseite" />
     <item
-        android:id="@+id/nav_formular"
+        android:id="@+id/nav_formulary"
         android:icon="@drawable/outline_menu_book_white_24"
         android:contentDescription="cd_home"
         android:title="Formeln" />

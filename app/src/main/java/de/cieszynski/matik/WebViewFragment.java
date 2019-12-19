@@ -2,23 +2,35 @@ package de.cieszynski.matik;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
+import android.webkit.URLUtil;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class WebViewFragment extends Fragment {
+import com.google.android.material.navigation.NavigationView;
+
+public class WebViewFragment extends Fragment implements View.OnLongClickListener  {
 
     private WebView webView;
     private Toolbar toolbar;
@@ -33,6 +45,25 @@ public class WebViewFragment extends Fragment {
         webView = view.findViewById(R.id.webview);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.getSettings().setJavaScriptEnabled(true);
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                int[] level = new int[]{
+                        Log.DEBUG,  // DEBUG
+                        Log.ERROR,  // ERROR
+                        Log.INFO,   // LOG
+                        Log.INFO,   // TIP?
+                        Log.WARN    // WARN
+                };
+                String tag = String.format("WebViewFragment: %s %d",
+                        URLUtil.guessFileName(consoleMessage.sourceId(), null, null),
+                        consoleMessage.lineNumber());
+                Log.println(level[consoleMessage.messageLevel().ordinal()], tag, consoleMessage.message());
+                return true;
+            }
+        });
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -48,12 +79,28 @@ public class WebViewFragment extends Fragment {
             }
         });
 
+        webView.addJavascriptInterface(new Object() {
+
+            @JavascriptInterface
+            public void showToast(String toast) {
+                Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
+            }
+
+            @JavascriptInterface
+            public void showBottomSheet(String data) {
+                Log.d("showBottomSheet", String.valueOf(data));
+                BottomSheetFragment fragment = BottomSheetFragment.newInstance();
+                fragment.show(getActivity().getSupportFragmentManager(), "TAG");
+            }
+        }, "android");
+
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {
-            webView.loadUrl(getArguments().getString("url", "file:///android_asset/index.html"));
+            webView.loadUrl(getArguments().getString("url", "file:///android_asset/crosslist.html"));
         }
 
+        webView.setOnLongClickListener(this);
         return view;
     }
 
@@ -62,8 +109,20 @@ public class WebViewFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_viewpager)
+                .setDrawerLayout(drawerLayout)
+                .build();
+
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-        NavigationUI.setupWithNavController(toolbar, navController, (DrawerLayout) getActivity().findViewById(R.id.drawer));
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return  NavigationUI.onNavDestinationSelected(menuItem, navController);
+        });
+
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
     }
 
     @Override
@@ -71,5 +130,21 @@ public class WebViewFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         webView.saveState(outState);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Log.d("XXX", "onLongClick");
+        WebView.HitTestResult result = webView.getHitTestResult();
+        if (result.getType() == WebView.HitTestResult.SRC_ANCHOR_TYPE) {
+
+            BottomSheetFragment fragment = BottomSheetFragment.newInstance();
+            fragment.show(getActivity().getSupportFragmentManager(), "TAG");
+            Log.d("XXX", result.getExtra());
+        } else {
+
+            Log.d("XXX", String.valueOf(result.getType()));
+        }
+        return true;
     }
 }

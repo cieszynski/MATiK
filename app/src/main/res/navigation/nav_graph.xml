@@ -12,10 +12,43 @@
         <action
             android:id="@+id/action_nav_viewpager_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_nav_viewpager_to_helpFragment"
+            app:destination="@id/helpFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_viewpager"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_viewpager_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
         android:name="de.cieszynski.matik.WebViewFragment"
-        tools:layout="@layout/fragment_webview" />
+        tools:layout="@layout/fragment_webview"></fragment>
 
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="de.cieszynski.matik.WebViewFragment"
+        tools:layout="@layout/fragment_webview">
+        <argument
+            android:name="url"
+            app:argType="string"
+            android:defaultValue="file:///android_asset/help.html" />
+        <action
+            android:id="@+id/action_helpFragment_pop"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="de.cieszynski.matik.WebViewFragment"
+        tools:layout="@layout/fragment_webview">
+        <argument
+            android:name="url"
+            app:argType="string"
+            android:defaultValue="file:///android_asset/settings.html" />
+    </fragment>
 </navigation>

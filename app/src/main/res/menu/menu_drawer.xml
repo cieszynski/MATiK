@@ -5,34 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/detailFragment"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="detailFragment" />
+            android:id="@+id/settingsFragment"
+            android:title="Einstellungen" />
         <item
-            android:id="@+id/nav_bookmark"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="bookmark" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="menu_slideshow" />
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="menu_tools" />
+            android:id="@+id/helpFragment"
+            android:title="Hilfe &amp; Feedback" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_home_black_24dp"
-                android:title="menu_share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_home_black_24dp"
-                android:title="menu_send" />
-        </menu>
-    </item>
-
 </menu>

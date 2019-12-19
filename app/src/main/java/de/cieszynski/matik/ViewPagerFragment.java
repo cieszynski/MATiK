@@ -35,7 +35,7 @@ public class ViewPagerFragment extends Fragment {
                     case R.id.nav_home:
                         viewPager2.setCurrentItem(0, false);
                         break;
-                    case R.id.nav_formular:
+                    case R.id.nav_formulary:
                         viewPager2.setCurrentItem(1, false);
                         break;
                     case R.id.nav_bookmark:
@@ -72,10 +72,10 @@ public class ViewPagerFragment extends Fragment {
                     bundle.putString("url", "file:///android_asset/bookmarks.html");
                     break;
                 case 1:
-                    bundle.putString("url", "file:///android_asset/dictionary.html");
+                    bundle.putString("url", "file:///android_asset/formulary.html");
                     break;
                 default:
-                    bundle.putString("url", "file:///android_asset/index.html");
+                    bundle.putString("url", "file:///android_asset/crosslist.html");
             }
             webViewFragment.setArguments(bundle);
             return webViewFragment;
