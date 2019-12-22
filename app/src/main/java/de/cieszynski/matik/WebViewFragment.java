@@ -1,10 +1,10 @@
 package de.cieszynski.matik;
 
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -23,14 +23,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.webkit.WebViewCompat;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class WebViewFragment extends Fragment implements View.OnLongClickListener  {
+public class WebViewFragment extends Fragment implements View.OnLongClickListener {
 
     private WebView webView;
     private Toolbar toolbar;
@@ -69,7 +70,13 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Bundle bundle = new Bundle();
                 bundle.putString("url", url);
-                Navigation.findNavController(view).navigate(R.id.detailFragment, bundle);
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setEnterAnim(R.anim.nav_default_enter_anim)
+                        .setExitAnim(R.anim.nav_default_exit_anim)
+                        .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                        .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+                        .build();
+                Navigation.findNavController(view).navigate(R.id.detailFragment, bundle, navOptions);
                 return true;
             }
 
@@ -87,10 +94,9 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
             }
 
             @JavascriptInterface
-            public void showBottomSheet(String data) {
-                Log.d("showBottomSheet", String.valueOf(data));
-                BottomSheetFragment fragment = BottomSheetFragment.newInstance();
-                fragment.show(getActivity().getSupportFragmentManager(), "TAG");
+            public String version() {
+                PackageInfo packageInfo = WebViewCompat.getCurrentWebViewPackage(getActivity());
+                return packageInfo.versionName;
             }
         }, "android");
 
@@ -119,7 +125,7 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
         NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawer(GravityCompat.START);
-            return  NavigationUI.onNavDestinationSelected(menuItem, navController);
+            return NavigationUI.onNavDestinationSelected(menuItem, navController);
         });
 
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
@@ -137,8 +143,10 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
         Log.d("XXX", "onLongClick");
         WebView.HitTestResult result = webView.getHitTestResult();
         if (result.getType() == WebView.HitTestResult.SRC_ANCHOR_TYPE) {
+            Bundle bundle = new Bundle();
+            bundle.putString("url", result.getExtra());
 
-            BottomSheetFragment fragment = BottomSheetFragment.newInstance();
+            BottomSheetFragment fragment = BottomSheetFragment.newInstance(bundle);
             fragment.show(getActivity().getSupportFragmentManager(), "TAG");
             Log.d("XXX", result.getExtra());
         } else {
