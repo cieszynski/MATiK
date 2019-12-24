@@ -32,12 +32,14 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
+        <!-- https://guides.codepath.com/android/using-the-app-toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
