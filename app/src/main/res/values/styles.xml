@@ -15,11 +15,32 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- Toolbar styles -->
+        <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item><!---->
+        <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation
+        </item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">#00ff00</item>
+    </style>
+
+    <style name="Custom.Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="maxButtonHeight">?attr/actionBarSize</item>
+        <item name="titleTextAppearance">@style/Custom.Widget.AppCompat.Toolbar.Title</item>
+    </style>
+
+    <!-- https://stackoverflow.com/questions/28042331/android-toolbar-small-title-text-in-landscape-mode -->
+    <style name="Custom.Widget.AppCompat.Toolbar.Title" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Custom.Widget.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+       <item name="android:minWidth">?attr/actionBarSize</item>
+    </style>
 </resources>

@@ -1,5 +1,6 @@
 package de.cieszynski.matik;
 
+import android.animation.ObjectAnimator;
 import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -27,6 +29,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import androidx.webkit.WebViewCompat;
 
 import com.google.android.material.navigation.NavigationView;
@@ -112,7 +115,7 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar = view.findViewById(R.id.toolbar);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -136,6 +139,26 @@ public class WebViewFragment extends Fragment implements View.OnLongClickListene
         super.onSaveInstanceState(outState);
 
         webView.saveState(outState);
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        final int colorFrom = getResources().getColor(R.color.windowBackground);
+        final int colorTo = getResources().getColor(R.color.transparent);
+
+        Toolbar toolbar = getView().findViewById(R.id.toolbar);
+        NestedScrollView nestedScrollView = getView().findViewById(R.id.nestedscrollview);
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY < 5) {
+                ObjectAnimator colorFade = ObjectAnimator.ofObject(toolbar, "backgroundColor",
+                        new ArgbEvaluator(), colorFrom, colorTo);
+                colorFade.setDuration(500);
+                colorFade.start();
+            } else {
+                toolbar.setBackgroundResource(R.color.windowBackground);
+            }
+        });
     }
 
     @Override
